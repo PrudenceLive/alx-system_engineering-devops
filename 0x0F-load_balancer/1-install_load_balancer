@@ -1,18 +1,17 @@
 #!/usr/bin/env bash
-# Configures a new Ubuntu server with a HAproxy load-balancer
-MyConfig="\
-frontend http_front
-    bind *:80
-    stats uri /haproxy?stats
-    default_backend web-servers
-    
-backend web-servers
-    balance roundrobin
-    server 5292-web-01 18.208.126.41:80
-    server 5292-web-02 44.200.48.184:80
-"
-add-apt-repository ppa:vbernat/haproxy-2.0
-apt update
-apt install -y haproxy
-echo "$MyConfig" >> /etc/haproxy/haproxy.cfg
-service haproxy start
+# Configure HAProxy load balancer server
+
+apt-get -y install software-properties-common
+add-apt-repository -y ppa:vbernat/haproxy-1.8
+apt-get -y update
+apt-get -y install haproxy=1.8.\*
+echo "frontend http
+        bind *:80
+        mode http
+        default_backend web-backend
+    backend web-backend
+        balance roundrobin
+        server 1574-web-01 35.227.35.75
+        server 1574-web-02 100.24.37.33" >> /etc/haproxy/haproxy.cfg
+
+service haproxy restart
