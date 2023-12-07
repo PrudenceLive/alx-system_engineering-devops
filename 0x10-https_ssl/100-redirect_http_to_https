@@ -1,3 +1,5 @@
+#!/bin/bash
+
 global
 	log /dev/log	local0
 	log /dev/log	local1 notice
@@ -35,12 +37,8 @@ defaults
 	errorfile 504 /etc/haproxy/errors/504.http
 
 frontend http_front
-   bind *:80
-   mode http
-   default_back web-servers
-
-frontend http_front
-   bind *:443 ssl crt /etc/letsencrypt/live/www.mzee1991.tech/mzee1991.tech.pem
+   ./bind *:80
+   ./bind *:443 ssl crt /etc/letsencrypt/live/www.pmprue.tech/pmprue.tech.pem
    reqadd X-Forwarded-Proto:\ https
    acl letsencrypt-acl path_beg /.well-known/acme-challenge/
    use_backend letsencrypt-backend if letsencrypt-acl
@@ -48,7 +46,7 @@ frontend http_front
    default_backend web-servers
 
 backend web-servers
-    redirect scheme https code 301 if !{ ssl_fc }
+    redirect scheme https code 301 if !"{ ssl_fc }"
     balance roundrobin
     server 5292-web-01 18.208.126.41:80 check
     server 5292-web-02 44.200.48.184:80 check
