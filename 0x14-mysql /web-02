@@ -1,0 +1,8 @@
+#!/usr/bin/env bash
+# server-01 login
+
+eval $("ssh-agent")
+
+ssh-add ~/.ssh/web
+
+ssh ubuntu@52.72.13.102
